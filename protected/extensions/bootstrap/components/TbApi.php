@@ -222,6 +222,7 @@ class TbApi extends CApplicationComponent {
             if (($path = Yii::getPathOfAlias($this->assetsPath)) !== false) {
                 $this->assetsPath = $path;
             }
+            //BY alexmadness
             $assetsUrl = Yii::app()->assetManager->publish($this->assetsPath, false, -1, $this->forceCopyAssets);
             $this->_assetsUrl = $assetsUrl;
         }
