@@ -1,5 +1,4 @@
 <?php
-
 /**
  * TbApi class file.
  * @author Christoffer Niska <christoffer.niska@gmail.com>
@@ -8,13 +7,12 @@
  * @package bootstrap.components
  * @version 1.2.0
  */
-Yii::import('bootstrap.helpers.TbHtml');
 
 /**
  * Bootstrap API component.
  */
-class TbApi extends CApplicationComponent {
-
+class TbApi extends CApplicationComponent
+{
     // Bootstrap plugins
     const PLUGIN_AFFIX = 'affix';
     const PLUGIN_ALERT = 'alert';
@@ -44,15 +42,20 @@ class TbApi extends CApplicationComponent {
      * @var string path to Bootstrap assets.
      */
     public $assetsPath;
+
     private $_assetsUrl;
 
     /**
      * Initializes this component.
      */
-    public function init() {
+    public function init()
+    {
         parent::init();
         if ($this->assetsPath === null) {
-            $this->assetsPath = realpath(dirname(__DIR__) . '/assets');
+            $this->assetsPath = Yii::getPathOfAlias('vendor.twbs.bootstrap.dist');
+        }
+        if ($this->assetsPath === null || strlen($this->assetsPath) < 1) {
+        	$this->assetsPath = realpath(__DIR__ . '/../assets');
         }
     }
 
@@ -61,10 +64,9 @@ class TbApi extends CApplicationComponent {
      * @param string $url the URL to the CSS file to register.
      * @param string $media the media type (defaults to 'screen').
      */
-    public function registerCoreCss($url = null, $media = 'screen') {
-
+    public function registerCoreCss($url = null, $media = 'screen')
+    {
         if ($url === null) {
-
             $fileName = YII_DEBUG ? 'bootstrap.css' : 'bootstrap.min.css';
             $url = $this->getAssetsUrl() . '/css/' . $fileName;
         }
@@ -76,7 +78,8 @@ class TbApi extends CApplicationComponent {
      * @param string $url the URL to the CSS file to register.
      * @param string $media the media type (defaults to 'screen').
      */
-    public function registerThemeCss($url = null, $media = 'screen') {
+    public function registerThemeCss($url = null, $media = 'screen')
+    {
         if ($url === null) {
             $fileName = YII_DEBUG ? 'bootstrap-theme.css' : 'bootstrap-theme.min.css';
             $url = $this->getAssetsUrl() . '/css/' . $fileName;
@@ -89,27 +92,29 @@ class TbApi extends CApplicationComponent {
      * @param string $url the URL to the CSS file to register.
      * @param string $media the media type.
      */
-    public function registerYiistrapCss($url = null, $media = 'strap') {
-
-        if ($url === null) {
+    public function registerYiistrapCss($url = null, $media = '')
+    {
+    	// Obsolete since this file doesn't exist
+        /*if ($url === null) {
             $fileName = YII_DEBUG ? 'yiistrap.css' : 'yiistrap.min.css';
-
             $url = $this->getAssetsUrl() . '/css/' . $fileName;
         }
-        Yii::app()->getClientScript()->registerCssFile($url, $media);
+        Yii::app()->getClientScript()->registerCssFile($url, $media);*/
     }
 
     /**
      * Fixes panning and zooming on mobile devices.
      */
-    public function fixPanningAndZooming() {
+    public function fixPanningAndZooming()
+    {
         Yii::app()->getClientScript()->registerMetaTag('width=device-width, initial-scale=1.0', 'viewport');
     }
 
     /**
      * Registers all Bootstrap CSS files.
      */
-    public function registerAllCss() {
+    public function registerAllCss()
+    {
         $this->registerCoreCss();
         $this->registerYiistrapCss();
         $this->fixPanningAndZooming();
@@ -120,7 +125,8 @@ class TbApi extends CApplicationComponent {
      * @param string $url the URL to the JavaScript file to register.
      * @param int $position the position of the JavaScript code.
      */
-    public function registerCoreScripts($url = null, $position = CClientScript::POS_END) {
+    public function registerCoreScripts($url = null, $position = CClientScript::POS_END)
+    {
         if ($url === null) {
             $fileName = YII_DEBUG ? 'bootstrap.js' : 'bootstrap.min.js';
             $url = $this->getAssetsUrl() . '/js/' . $fileName;
@@ -134,7 +140,8 @@ class TbApi extends CApplicationComponent {
     /**
      * Registers the Tooltip and Popover plugins.
      */
-    public function registerTooltipAndPopover() {
+    public function registerTooltipAndPopover()
+    {
         $this->registerPopover();
         $this->registerTooltip();
     }
@@ -142,7 +149,8 @@ class TbApi extends CApplicationComponent {
     /**
      * Registers all Bootstrap JavaScript files.
      */
-    public function registerAllScripts() {
+    public function registerAllScripts()
+    {
         $this->registerCoreScripts();
         $this->registerTooltipAndPopover();
     }
@@ -150,7 +158,8 @@ class TbApi extends CApplicationComponent {
     /**
      * Registers all assets.
      */
-    public function register() {
+    public function register()
+    {
         $this->registerAllCss();
         $this->registerAllScripts();
     }
@@ -161,7 +170,8 @@ class TbApi extends CApplicationComponent {
      * @param array $options the JavaScript options for the plugin.
      * @see http://twitter.github.com/bootstrap/javascript.html#popover
      */
-    public function registerPopover($selector = 'body', $options = array()) {
+    public function registerPopover($selector = 'body', $options = array())
+    {
         TbArray::defaultValue('selector', 'a[rel=popover]', $options);
         $this->registerPlugin(self::PLUGIN_POPOVER, $selector, $options);
     }
@@ -172,7 +182,8 @@ class TbApi extends CApplicationComponent {
      * @param array $options the JavaScript options for the plugin.
      * @see http://twitter.github.com/bootstrap/javascript.html#tooltip
      */
-    public function registerTooltip($selector = 'body', $options = array()) {
+    public function registerTooltip($selector = 'body', $options = array())
+    {
         TbArray::defaultValue('selector', 'a[rel=tooltip]', $options);
         $this->registerPlugin(self::PLUGIN_TOOLTIP, $selector, $options);
     }
@@ -184,7 +195,8 @@ class TbApi extends CApplicationComponent {
      * @param array $options the JavaScript options for the plugin.
      * @param int $position the position of the JavaScript code.
      */
-    public function registerPlugin($name, $selector, $options = array(), $position = CClientScript::POS_END) {
+    public function registerPlugin($name, $selector, $options = array(), $position = CClientScript::POS_END)
+    {
         $options = !empty($options) ? CJavaScript::encode($options) : '';
         $script = "jQuery('{$selector}').{$name}({$options});";
         $id = __CLASS__ . '#Plugin' . self::$counter++;
@@ -197,7 +209,8 @@ class TbApi extends CApplicationComponent {
      * @param string[] $events the JavaScript event configuration (name=>handler).
      * @param int $position the position of the JavaScript code.
      */
-    public function registerEvents($selector, $events, $position = CClientScript::POS_END) {
+    public function registerEvents($selector, $events, $position = CClientScript::POS_END)
+    {
         if (!empty($events)) {
             $script = '';
             foreach ($events as $name => $handler) {
@@ -215,18 +228,16 @@ class TbApi extends CApplicationComponent {
      * Returns the url to the published assets folder.
      * @return string the url.
      */
-    protected function getAssetsUrl() {
-
+    protected function getAssetsUrl()
+    {
         if (!isset($this->_assetsUrl)) {
-
             if (($path = Yii::getPathOfAlias($this->assetsPath)) !== false) {
                 $this->assetsPath = $path;
             }
-            //BY alexmadness
+            
             $assetsUrl = Yii::app()->assetManager->publish($this->assetsPath, false, -1, $this->forceCopyAssets);
             $this->_assetsUrl = $assetsUrl;
         }
         return $this->_assetsUrl;
     }
-
 }
